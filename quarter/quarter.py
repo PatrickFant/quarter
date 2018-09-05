@@ -10,14 +10,6 @@ def _is_valid_quarter(quarter):
     return quarter and quarter > 0 and quarter <= 4
 
 
-def quarter_range(start, end, step=QuarterDelta(1)):
-    """Get range of quarters."""
-    curr = start
-    while curr != end:
-        yield curr
-        curr += step
-
-
 class QuarterDelta(object):
     """Class to represent differences between financial quarters."""
 
@@ -49,8 +41,8 @@ class QuarterDelta(object):
         """Representation of QuarterDelta instance."""
         return 'quarter.{0}({1}, {2})'.format(
             self.__class__.__name__,
-            self._years,
-            self._quarters)
+            self._quarters,
+            self._years)
 
     def __str__(self):
         """String conversion of QuarterDelta instance."""
@@ -65,8 +57,8 @@ class QuarterDelta(object):
         """Add two QuarterDeltas together."""
         if isinstance(other, QuarterDelta):
             return self.__class__(
-                self._years + other.years,
-                self._quarters + other.quarters)
+                years=self._years + other.years,
+                quarters=self._quarters + other.quarters)
         else:
             return NotImplemented
 
@@ -89,8 +81,8 @@ class QuarterDelta(object):
     def __neg__(self):
         """Negate this QuarterDelta."""
         return self.__class__(
-            -self._years,
-            -self._quarters)
+            years=-self._years,
+            quarters=-self._quarters)
 
     def __pos__(self):
         """+ operator."""
@@ -107,8 +99,8 @@ class QuarterDelta(object):
         """Multiply QuarterDelta by an int."""
         if isinstance(other, int):
             return self.__class__(
-                self._years * other,
-                self._quarters * other)
+                years=self._years * other,
+                quarters=self._quarters * other)
         else:
             return NotImplemented
 
@@ -118,7 +110,7 @@ class QuarterDelta(object):
         """Divide QuarterDelta by an int."""
         if isinstance(other, int):
             quarters = self._years * 4 + self._quarters
-            return self.__class__(0, quarters // other)
+            return self.__class__(years=0, quarters=quarters // other)
         else:
             return NotImplemented
 
@@ -209,7 +201,9 @@ class Quarter(object):
     def __add__(self, other):
         """Add a QuarterDelta to self."""
         if isinstance(other, QuarterDelta):
-            self_delta = QuarterDelta(self._year, self._quarter - 1)
+            self_delta = QuarterDelta(
+                years=self._year,
+                quarters=self._quarter - 1)
             delta_sum = self_delta + other
             return Quarter(
                 delta_sum.years,
@@ -285,3 +279,11 @@ class Quarter(object):
             year=self.year,
             month=end_month,
             day=calendar.monthrange(self.year, end_month)[1])
+
+
+def quarter_range(start, end, step=QuarterDelta(1)):
+    """Get range of quarters."""
+    curr = start
+    while curr != end:
+        yield curr
+        curr += step

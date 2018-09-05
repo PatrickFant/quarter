@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="quarter",
-    version="0.0.1",
+    version="0.0.4",
     author="Patrick Fant",
     author_email="patrick.fant@recordedfuture.com",
     description="datetime-like package to work with financial quarters.",
